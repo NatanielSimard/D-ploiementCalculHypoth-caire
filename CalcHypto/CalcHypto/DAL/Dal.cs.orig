@@ -1,0 +1,44 @@
+﻿using CalcHypto.DAL.Factories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CalcHypto.DAL
+{
+    internal class Dal
+    {
+<<<<<<< HEAD
+        private SimulationFactory? _simulationFact = null;
+        
+
+        public SimulationFactory SimulationFact
+        {
+            get
+            {
+                if (_simulationFact == null)
+                {
+                    _simulationFact = new SimulationFactory();
+                }
+
+                return _simulationFact;
+=======
+        private SimulationFactory? _simFactory = null;
+
+
+        public SimulationFactory SimFactory
+        {
+            get
+            {
+                if (_simFactory == null)
+                {
+                    _simFactory = new SimulationFactory();
+                }
+
+                return _simFactory;
+>>>>>>> 4bd9840d734bde90bab35769486bc3cbe3e14353
+            }
+        }
+    }
+}

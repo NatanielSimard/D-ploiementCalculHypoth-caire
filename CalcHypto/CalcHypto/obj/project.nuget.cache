@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "M5o1GGQAiv4sd2I+faYhLNDPt8P2Z5Flck6RSGjYxucukVb2TwAK9rEoBms2ox2HwDbZUlNYVFo3x4hY7ZJKIw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\darkm\\Desktop\\D-ploiementCalculHypoth-caire\\CalcHypto\\CalcHypto\\CalcHypto.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\darkm\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,389 @@
+<<<<<<< HEAD
+﻿using CalcHypto.DAL;
+using CalcHypto.Model;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Xml.Serialization;
+using CalcHypto.DAL;
+using System.Windows.Input;
+using PartageDepense.ViewModel;
+
+namespace CalcHypto.ViewModel
+{
+    internal class SimulationVM : INotifyPropertyChanged
+    {
+
+        #region declaration
+
+        private List<Simulation> _simulations;
+
+        public List<Simulation> Simulations
+        {
+            get
+            {
+                return new List<Simulation>(_simulations);
+            }
+            set
+            {
+                _simulations = value;
+                ValeurChangee("Simulation");
+            }
+        }
+
+        private Visibility _visAjouterModifier;
+        public Visibility VisAjouterModifier
+        {
+            get
+            {
+                return _visAjouterModifier;
+            }
+            set
+            {
+                _visAjouterModifier = value;
+                ValeurChangee("VisAjouterModifier");
+            }
+        }
+
+
+        private Visibility _visSupprimerAfficher;
+        public Visibility VisSupprimerAfficher
+        {
+            get
+            {
+                return _visSupprimerAfficher;
+            }
+            set
+            {
+                _visSupprimerAfficher = value;
+                ValeurChangee("VisSupprimerAfficher");
+            }
+        }
+
+        private Simulation _simulationSelectioner;
+
+        public Simulation SimulationSelectioner
+        {
+            get
+            {
+                return _simulationSelectioner;
+            }
+            set
+            {
+
+                _simulationSelectioner = value;
+                SelectionerSimulation(_simulationSelectioner);
+                AfficherSetup();
+                ValeurChangee("SimulationSelectioner");
+            }
+        }
+
+        private string _nom, _prenom, _description, _frequence;
+        private float _montantFinance, _TauxInteretAnuelle;
+        private int _periodeAmortissement;
+
+        public string Nom
+        {
+            get
+            {
+                return _nom;
+            }
+            set
+            {
+                _nom = value;
+                ValeurChangee("Nom");
+            }
+        }
+
+        public string Prenom
+        {
+            get
+            {
+                return _prenom;
+            }
+            set
+            {
+                _prenom = value;
+                ValeurChangee("Prenom");
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                ValeurChangee("Description");
+            }
+        }
+
+        public string Frequence
+        {
+            get
+            {
+                return _frequence;
+            }
+            set
+            {
+                _frequence = value;
+                ValeurChangee("Frequence");
+            }
+        }
+
+        public float MontantFinance
+        {
+            get
+            {
+                return _montantFinance;
+            }
+            set
+            {
+                _montantFinance = value;
+                ValeurChangee("MontantFinance");
+            }
+        }
+        public float TauxInteretAnuelle
+        {
+            get
+            {
+                return _TauxInteretAnuelle;
+            }
+            set
+            {
+                _TauxInteretAnuelle = value;
+                ValeurChangee("TauxInteretAnuelle");
+            }
+        }
+
+        public int PeriodeAmortissement
+        {
+            get
+            {
+                return _periodeAmortissement;
+            }
+            set
+            {
+                _periodeAmortissement = value;
+                ValeurChangee("PeriodeAmortissement");
+            }
+        }
+
+        #endregion
+
+        #region Commandes
+
+        //Setup AjouterSimulation
+        private ICommand _AjouterSimulationSetup;
+
+        public ICommand AjouterSimulationSetup
+        {
+            get { return _AjouterSimulationSetup; }
+            private set { _AjouterSimulationSetup = value; }
+        }
+        private void AjouterSimulationSetup_Execute(object parSelect)
+        {
+            AjouterSetup();
+        }
+        private bool AjouterSimulationSetup_CanExecute(object param)
+        {
+            return true;
+        }
+
+        //AjouterSimulation
+
+        private ICommand _AjouterSimulation;
+
+        public ICommand AjouterSimulation
+        {
+            get { return _AjouterSimulation; }
+            private set { _AjouterSimulation = value; }
+        }
+        private void AjouterSimulation_Execute(object parSelect)
+        {
+            Dal dal = new Dal();
+            if (IsSimulationFull())
+            {
+                Simulation SimulationAsauvgarder = new Simulation(Nom, Prenom, Description, MontantFinance, TauxInteretAnuelle, PeriodeAmortissement, Frequence);
+                try
+                {
+                    Simulation vraiSimulation = dal.SimulationFact.SaveSimulation(SimulationAsauvgarder);
+                    Simulations.Add(vraiSimulation);
+                    SimulationSelectioner = vraiSimulation;
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
+            }    
+        }
+        private bool AjouterSimulation_CanExecute(object param)
+        {
+            return true;
+        }
+
+
+        //Setup ModifierSimulation
+
+        private ICommand _ModifierSimulationSetup;
+
+        public ICommand ModifierSimulationSetup
+        {
+            get { return _ModifierSimulationSetup; }
+            private set { _ModifierSimulationSetup = value; }
+        }
+        private void ModifierSimulationSetup_Execute(object parSelect)
+        {
+            ModificationSetup();
+        }
+        private bool ModifierSimulationSetup_CanExecute(object param)
+        {
+            return true;
+        }
+
+        //supprimer Simulation
+
+        private ICommand _SupprimerSimulation;
+
+        public ICommand SupprimerSimulation
+        {
+            get { return _SupprimerSimulation; }
+            private set { _SupprimerSimulation = value; }
+        }
+        private void SupprimerSimulation_Execute(object parSelect)
+        {
+            Dal dal = new Dal();
+
+
+            try
+            {
+                dal.SimulationFact.DeleteSimulation(SimulationSelectioner);
+                Simulations.Remove(SimulationSelectioner);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+                
+            
+        }
+        private bool SupprimerSimulation_CanExecute(object param)
+        {
+            return true;
+        }
+
+
+
+        #endregion
+
+        #region Fonction
+
+        private void AjouterSetup()
+        {
+            VisAjouterModifier = Visibility.Visible;
+            VisSupprimerAfficher = Visibility.Collapsed;
+
+            ClearAffichage();
+        }
+        private void ModificationSetup()
+        {
+            VisAjouterModifier = Visibility.Visible;
+            VisSupprimerAfficher = Visibility.Collapsed;
+        }
+        private void AfficherSetup()
+        {
+            VisSupprimerAfficher = Visibility.Visible;
+            VisAjouterModifier = Visibility.Collapsed;
+        }
+
+        private void ClearAffichage()
+        {
+            Nom = "";
+            Prenom = "";
+            Description = "";
+            MontantFinance = 0;
+            TauxInteretAnuelle = 0;
+            PeriodeAmortissement = 0;
+            Frequence = "Mensuelle";
+        }
+
+        private bool IsSimulationFull()
+        {
+            if (Nom != "" && Prenom != "" && Description != "" && Frequence != "" && MontantFinance != 0 && PeriodeAmortissement != 0 && TauxInteretAnuelle != 0 )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void SelectionerSimulation(Simulation simulationSelectioner)
+        {
+            Nom = simulationSelectioner.nom;
+            Prenom = simulationSelectioner.prenom;
+            Description = SimulationSelectioner.description;
+            MontantFinance = simulationSelectioner.montantFinance;
+            TauxInteretAnuelle = simulationSelectioner.tauxInteret;
+            PeriodeAmortissement = simulationSelectioner.periodeAmortissement;
+            Frequence = simulationSelectioner.frequenceVersement;
+        }
+
+
+        #endregion
+
+
+        public SimulationVM()
+        {
+            Dal dal = new Dal();
+            Simulations =  dal.SimulationFact.GetAllSimulation();
+
+            _AjouterSimulation = new CommandeRelais(AjouterSimulation_Execute, AjouterSimulation_CanExecute);
+            _AjouterSimulationSetup = new CommandeRelais(AjouterSimulationSetup_Execute,AjouterSimulationSetup_CanExecute);
+            _ModifierSimulationSetup = new CommandeRelais(ModifierSimulationSetup_Execute, ModifierSimulationSetup_CanExecute);
+            _SupprimerSimulation = new CommandeRelais(SupprimerSimulation_Execute, SupprimerSimulation_CanExecute);
+
+        }
+
+
+
+        #region Notification
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void ValeurChangee(string nomPropriete)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(nomPropriete));
+            }
+        }
+
+        #endregion
+
+
+
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CalcHypto.ViewModel
+{
+    internal class SimulationVM
+    {
+
+>>>>>>> 4bd9840d734bde90bab35769486bc3cbe3e14353
+    }
+}

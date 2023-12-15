@@ -1,0 +1,171 @@
+﻿<Window x:Class="CalcHypto.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CalcHypto.View"
+        mc:Ignorable="d"
+        Title="Simulation Hypothécaire" MinWidth="550px" MinHeight="450px" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Height="35" Orientation="Horizontal">
+            <Label>Version:</Label>
+            <Label x:Name="version">1.1.2</Label>
+            <Button Height="30" Click="Button_Click_1">Rechercher une Update</Button>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <!--liste-->
+            <Grid  Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <ListView ItemsSource="{Binding Simulations}" SelectedItem="{Binding SimulationSelectioner}" Grid.Row="0" Margin="10">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="100px" Header="Prenom" DisplayMemberBinding="{Binding nom}"></GridViewColumn>
+                            <GridViewColumn Width="100px" Header="Montant financé" DisplayMemberBinding="{Binding prenom}"></GridViewColumn>
+                            <GridViewColumn Width="150px" Header="interèt" DisplayMemberBinding="{Binding tauxInteret}"></GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <TextBox Grid.Row="1" Background="Yellow" Foreground="red" IsReadOnly="True" TextWrapping="Wrap" Visibility="{Binding VisibiliteErreur}" Text="{Binding MessageErreur}">
+
+                </TextBox>
+                <Separator Grid.Row="2" Margin="5" ></Separator>
+                <StackPanel  Orientation="Horizontal" Height="40px" Grid.Row="3" >
+                    <Button Margin="5" Height="25px" Width="70px" Command="{Binding AjouterSimulationSetup}" >Ajouter</Button>
+                    <Button Margin="5" Height="25px" Width="70px" Command="{Binding ModifierSimulationSetup}" IsEnabled="{Binding ModifierState}">Modifier</Button>
+                    <Button Margin="5" Height="25px" Width="70px" Command="{Binding SupprimerSimulation}" IsEnabled="{Binding SupprimerState}">Supprimer</Button>
+                </StackPanel>
+            </Grid>
+            <!--gestion affichage-->
+            <GroupBox Header="Informations" Grid.Column="1" Margin="5" Visibility="{Binding VisSupprimerAfficher}">
+
+
+                <Grid  Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="0">
+                        <Label>Nom:</Label>
+                        <Label Content="{Binding Nom}" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="1">
+                        <Label>Prenom:</Label>
+                        <Label Content="{Binding Prenom}" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="3">
+                        <Label>Description:</Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="4">
+                        <Border BorderBrush="Black" BorderThickness="1">
+                            <TextBlock  Text="{Binding Description}" MaxWidth="300px" MinWidth="200px" MinHeight="100px" TextWrapping="Wrap">
+
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Margin="5"  Orientation="Horizontal" Grid.Row="5">
+                        <Label>Montant Financé:</Label>
+                        <Label Content="{Binding MontantFinance}" ContentStringFormat="{}{0:c}" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5"  Orientation="Horizontal" Grid.Row="6">
+                        <Label>Taux intéret Anuelle:</Label>
+                        <Label Content="{Binding TauxInteretAnuelle}" ContentStringFormat="{}{0:P2}" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="7">
+                        <Label>Periode d'amortissement:</Label>
+                        <Label Content="{Binding PeriodeAmortissement}" ContentStringFormat="{}{0} Années" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="8">
+                        <Label>Frequence:</Label>
+                        <Label Content="{Binding Frequence}" Margin="10,0,0,0"></Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="9">
+                        <Button Height="30px" Margin="5" Click="Button_Click">Historique des évènements</Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <!--gestion Modification-->
+            <GroupBox Header="Informations" Grid.Column="1" Margin="5" Visibility="{Binding VisAjouterModifier}">
+                <Grid  Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="0">
+                        <Label>Nom:</Label>
+                        <TextBox Width="200px" Margin="10,0,0,0" Text="{Binding Nom}"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="1">
+                        <Label>Prenom:</Label>
+                        <TextBox Width="200px" Margin="10,0,0,0" Text="{Binding Prenom}"></TextBox>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="3">
+                        <Label>Description:</Label>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="4">
+                        <Border BorderBrush="Black" BorderThickness="1">
+                            <TextBox MaxWidth="275px"  MinWidth="250px" MinHeight="100px" Text="{Binding Description}" TextWrapping="Wrap">
+
+                            </TextBox>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Margin="5"  Orientation="Horizontal" Grid.Row="5">
+                        <Label>Montant Financé:</Label>
+                        <TextBox Text="{Binding MontantFinance}" Width="150px" Margin="10,0,0,0"></TextBox>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="6">
+                        <Label>Taux intéret Anuelle:</Label>
+                        <TextBox Width="100px" Margin="10,0,0,0" Text="{Binding TauxInteretAnuelle}"></TextBox>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="7">
+                        <Label>Periode d'amortissement:</Label>
+                        <TextBox Width="100px" Margin="10,0,0,0" Text="{Binding PeriodeAmortissement}" ></TextBox>
+                    </StackPanel>
+                    <StackPanel  Margin="5" Orientation="Horizontal" Grid.Row="8">
+                        <Label>Frequence:</Label>
+                        <ComboBox Width="100px" Margin="10,0,0,0" SelectedItem="{Binding Frequence}"  Text="">
+                            <ComboBoxItem Content="Mensuelle"></ComboBoxItem>
+                            <ComboBoxItem Content="Deux semaine"></ComboBoxItem>
+                            <ComboBoxItem Content="Semaine"></ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="9">
+                        <Button Height="30px" Margin="5" Command="{Binding AjouterSimulation}" Content="{Binding EditMode}"></Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
