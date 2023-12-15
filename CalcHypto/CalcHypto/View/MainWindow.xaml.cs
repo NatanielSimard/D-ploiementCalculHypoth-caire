@@ -47,8 +47,7 @@ namespace CalcHypto.View
 
                 if (Assembly.GetEntryAssembly().GetName().Version.ToString() != releaseInfo.TagName)
                 {
-                    //faire l'update
-
+                    DownloadAndUpdate(releaseInfo);
                 }
 
             }

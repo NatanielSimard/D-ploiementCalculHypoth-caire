@@ -54,7 +54,7 @@ namespace CalcHypto.View {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CalcHypto;component/view/historique.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CalcHypto;V2.0.0.0;component/view/historique.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\Historique.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

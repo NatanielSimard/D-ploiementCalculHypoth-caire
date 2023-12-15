@@ -15,6 +15,7 @@
             <Label>Version:</Label>
             <Label x:Name="version">1.1.2</Label>
             <Button Height="30" Click="Button_Click_1">Rechercher une Update</Button>
+            <Label>Vous avez télécharger la nouvelle version !</Label>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
