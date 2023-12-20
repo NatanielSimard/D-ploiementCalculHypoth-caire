@@ -37,17 +37,13 @@ namespace CalcHypto.View
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             string reposPath = "https://api.github.com/repos/NatanielSimard/D-ploiementCalculHypoth-caire/releases/latest";
-
-            using (var client = new HttpClient())
+            var client = new HttpClient()
+            client.DefaultRequestHeaders.Add("User-Agent", "request"); 
+            var response = await client.GetStringAsync(reposPath);
+            var releaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(response);
+            if (Assembly.GetEntryAssembly().GetName().Version.ToString() != releaseInfo.TagName)
             {
-                client.DefaultRequestHeaders.Add("User-Agent", "request"); 
-                var response = await client.GetStringAsync(reposPath);
-                var releaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(response);
-                if (Assembly.GetEntryAssembly().GetName().Version.ToString() != releaseInfo.TagName)
-                {
-                    DownloadAndUpdate(releaseInfo);
-                }
-
+                DownloadAndUpdate(releaseInfo);
             }
         }
         public async void DownloadAndUpdate(ReleaseInfo releaseInfo)
