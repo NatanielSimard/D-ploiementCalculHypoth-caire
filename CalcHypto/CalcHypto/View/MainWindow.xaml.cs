@@ -34,7 +34,6 @@ namespace CalcHypto.View
             vueHis.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             vueHis.ShowDialog();
         }
-
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             string reposPath = "https://api.github.com/repos/NatanielSimard/D-ploiementCalculHypoth-caire/releases/latest";
@@ -44,7 +43,6 @@ namespace CalcHypto.View
                 client.DefaultRequestHeaders.Add("User-Agent", "request"); 
                 var response = await client.GetStringAsync(reposPath);
                 var releaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(response);
-
                 if (Assembly.GetEntryAssembly().GetName().Version.ToString() != releaseInfo.TagName)
                 {
                     DownloadAndUpdate(releaseInfo);
@@ -52,50 +50,30 @@ namespace CalcHypto.View
 
             }
         }
-
         public async void DownloadAndUpdate(ReleaseInfo releaseInfo)
         {
             string downloadUrl = releaseInfo.InstallerUrl;
             string localPath = Path.Combine(Path.GetTempPath(), "CalculHypo-download.exe");
-
             using (var client = new HttpClient())
             {
-                // Set up HttpClient with the personal access token for authentication
-                //client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("YourAppName", "1.0"));
+                var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
 
-                try
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    // Get the installer as a stream
-                    var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
-
-                    using (var stream = await response.Content.ReadAsStreamAsync())
-                    using (var fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await stream.CopyToAsync(fileStream);
-                    }
-
-                    // Execute the installer
-                    Process.Start(localPath);
-
-                    // Optionally, close the current application
-                    Application.Current.Shutdown();
+                    await stream.CopyToAsync(fileStream);
                 }
-                catch (Exception ex)
-                {
-                    // Handle exceptions (e.g., log the error or notify the user)
-                }
+                Process.Start(localPath);
+                Application.Current.Shutdown();
             }
         }
         public class ReleaseInfo
         {
             [JsonProperty("tag_name")]
             public string TagName { get; set; }
-
             [JsonProperty("assets")]
             public List<GitHubAsset> Assets { get; set; }
-
-            // Assuming the installer is the first asset. Adjust as needed.
             public string InstallerUrl => Assets.FirstOrDefault()?.BrowserDownloadUrl;
         }
 
@@ -103,8 +81,6 @@ namespace CalcHypto.View
         {
             [JsonProperty("browser_download_url")]
             public string BrowserDownloadUrl { get; set; }
-
-            // Add more properties as needed
         }
     }
 }
